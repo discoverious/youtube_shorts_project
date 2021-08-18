@@ -1,0 +1,4 @@
+# Project exclude paths
+/venv/
+/.secrets/
+/temperary_database/videos/

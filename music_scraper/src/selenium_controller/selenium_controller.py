@@ -79,8 +79,17 @@ class SeleniumController:
             driver = webdriver.Chrome(base_path + chrome_driver_file, options=options)
 
         except:
-            driver = webdriver.Chrome(
-                "/home/discoverious/Documents/local_database/utility_database/driver/chromedriver", options=options)
+            print("이 에러 난 것")
+            # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+            BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+            # Import secrets
+            DB_DIR = os.path.join(BASE_DIR, '../..')
+            base_path = f'{DB_DIR}/music_scraper/selenium_storage/'
+
+            print(base_path)
+
+            driver = webdriver.Chrome(base_path + chrome_driver_file, options=options)
 
         return driver
 

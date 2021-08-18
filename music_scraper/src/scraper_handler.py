@@ -1,4 +1,3 @@
-from music_scraper.src.selenium_controller import SeleniumController
 import time
 from selenium.webdriver.common.action_chains import ActionChains
 import json
@@ -6,6 +5,16 @@ import re
 import requests
 import pickle
 import os
+import sys
+
+import sys
+import os
+
+module_path = os.path.abspath(os.getcwd())
+if module_path not in sys.path:
+    sys.path.append(module_path)
+
+from music_scraper.src.selenium_controller import SeleniumController
 from music_scraper.src.music_recorder.linux_internal_sound_recorder import LinuxInternalSoundRecorder
 
 

@@ -8,7 +8,12 @@ from movie_creator.thumbnail_creator.design_engine.text_handler import TextHandl
 
 class VideoHandler:
     def __init__(self, subtitle_font_name):
-        self.base_path = '/home/discoverious/Documents/PycharmProjects/youtube_shorts_project/temperary_database'
+        # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+        # Import secrets
+        DB_DIR = os.path.join(BASE_DIR, '../../')
+        self.base_path = f'{DB_DIR}/temperary_database'
         self.text_handler = TextHandler(subtitle_font_name=subtitle_font_name)
 
     def load_track_data_list(self, file_name):

@@ -1,6 +1,6 @@
 from PIL import Image, ImageDraw, ImageFont
 from movie_creator.thumbnail_creator.design_engine.text_wrapper import TextWrapper
-
+import os
 
 class TextHandler:
     def __init__(self, canvas_width=None, canvas_height=None, track_title_font_name=None, musician_title_font_name=None, subtitle_font_name=None):
@@ -8,7 +8,12 @@ class TextHandler:
         self.canvas_height = canvas_height if canvas_height is not None else 400
 
         # Set font setting
-        self.font_base_path = '/home/discoverious/Documents/PycharmProjects/youtube_shorts_project/temperary_database/fonts'
+        # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+        # Import secrets
+        DB_DIR = os.path.join(BASE_DIR, '../../')
+        self.font_base_path = f'{DB_DIR}/temperary_database/fonts'
 
         track_title_font = None
         if track_title_font_name is not None: track_title_font = ImageFont.truetype(font=f"{self.font_base_path}/{track_title_font_name}", size=30)
@@ -17,7 +22,7 @@ class TextHandler:
         if musician_title_font_name is not None: musician_title_font = ImageFont.truetype(font=f"{self.font_base_path}/{musician_title_font_name}", size=23)
 
         subtitle_font = None
-        if subtitle_font_name is not None: subtitle_font = ImageFont.truetype(font=f"{self.font_base_path}/{subtitle_font_name}", size=19)
+        if subtitle_font_name is not None: subtitle_font = ImageFont.truetype(font=f"{self.font_base_path}/{subtitle_font_name}", size=22)
 
         self.font_setting = {'track_title_font': track_title_font,
                              'musician_title_font': musician_title_font,

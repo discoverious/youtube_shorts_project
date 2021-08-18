@@ -1,10 +1,16 @@
 import pyaudio
 import wave
+import os
 
 
 class LinuxInternalSoundRecorder:
     def __init__(self):
-        self.base_save_path = '/home/discoverious/Documents/PycharmProjects/youtube_shorts_project/temperary_database/musics'
+        # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+        # Import secrets
+        DB_DIR = os.path.join(BASE_DIR, '../..')
+        self.base_save_path = f'{DB_DIR}/temperary_database/musics'
 
     def start_recording(self, wave_output_filename, record_seconds):
         '''

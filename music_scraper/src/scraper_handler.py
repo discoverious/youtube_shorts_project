@@ -12,13 +12,25 @@ from music_scraper.src.music_recorder.linux_internal_sound_recorder import Linux
 class ScraperHandler:
     def __init__(self):
         # Data to login bugs
-        self.login_data = {'id': 'assemble_market@naver.com', 'password': 'djtpaqmf12!'}
+        # Font info for each language
+        # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+        # Import secrets
+        ROOT_DIR = os.path.dirname(BASE_DIR)
+        SECRET_DIR = os.path.join(ROOT_DIR, '.secrets')
+
+        self.login_settings = json.load(open(os.path.join(SECRET_DIR, 'bugs_login_info.json'), 'rb'))
+
+        self.login_data = {'id': self.login_settings["BUGS_ID"], 'password': self.login_settings["BUGS_PASSWORD"]}
 
         # Instance to record internal sound
         self.internal_sound_recorder = LinuxInternalSoundRecorder()
 
         # Base save path
-        self.base_save_path = '/home/discoverious/Documents/PycharmProjects/youtube_shorts_project/temperary_database'
+        # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+        DB_DIR = os.path.join(BASE_DIR, '..')
+        self.base_save_path = f'{DB_DIR}/temperary_database'
 
     def scrape_process(self):
         # Set controller instance

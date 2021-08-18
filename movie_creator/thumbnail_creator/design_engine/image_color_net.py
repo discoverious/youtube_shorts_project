@@ -3,6 +3,7 @@ from sklearn.cluster import KMeans
 from PIL import Image
 import json
 from math import sqrt
+import os
 
 
 class ItemColorNet:
@@ -12,7 +13,12 @@ class ItemColorNet:
         self.color_cluster = KMeans(n_clusters=self.num_of_clusters)
 
         # Load gradient color set
-        self.base_path = '/home/discoverious/Documents/PycharmProjects/youtube_shorts_project/temperary_database'
+        # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+        # Import secrets
+        DB_DIR = os.path.join(BASE_DIR, '../../')
+        self.base_path = f'{DB_DIR}/temperary_database'
 
         with open(f'{self.base_path}/gradation_color_set/ver_1.json') as json_file:
             self.gradient_color_set = list()

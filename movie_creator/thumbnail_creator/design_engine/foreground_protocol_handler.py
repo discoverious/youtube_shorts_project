@@ -1,5 +1,6 @@
 from PIL import Image, ImageFilter
 import numpy as np
+import os
 
 from movie_creator.thumbnail_creator.design_engine.design_engine_utility import DesignEngineUtility
 
@@ -7,7 +8,13 @@ from movie_creator.thumbnail_creator.design_engine.design_engine_utility import 
 class ForegroundProtocolHandler:
     def __init__(self):
         self.design_engine_utility = DesignEngineUtility()
-        self.base_asset_path = '/home/discoverious/Documents/PycharmProjects/youtube_shorts_project/temperary_database'
+
+        # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+        # Import secrets
+        DB_DIR = os.path.join(BASE_DIR, '../../')
+        self.base_asset_path = f'{DB_DIR}/temperary_database'
     
     def attach_shadow(self, asset_image):
         # variables for blur mask

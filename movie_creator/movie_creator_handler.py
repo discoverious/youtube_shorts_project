@@ -126,6 +126,7 @@ if __name__ == "__main__":
 
         for track_file in track_file_list:
             print(f"제목: {track_file['track_information_dict']['track_title']}, 가수: {track_file['track_information_dict']['musician_title']}")
+            print(track_file)
 
         print('-' * 50)
         print("이 플레이리스트로 할거요? ( y / n )")
@@ -146,5 +147,6 @@ if __name__ == "__main__":
                                                 clip_length=60)
 
         except Exception as e:
+            print("ERROR OCCURRED!")
             print(e)
 

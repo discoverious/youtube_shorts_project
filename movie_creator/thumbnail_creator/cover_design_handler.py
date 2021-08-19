@@ -5,6 +5,8 @@ from movie_creator.thumbnail_creator.design_engine.foreground_handler import For
 from movie_creator.thumbnail_creator.design_engine.text_handler import TextHandler
 from movie_creator.thumbnail_creator.design_engine.design_engine_utility import DesignEngineUtility
 import os
+import requests
+import re
 
 
 class CoverDesignHandler:
@@ -42,9 +44,17 @@ class CoverDesignHandler:
 
         return data_set
 
+    @staticmethod
+    def get_album_cover_image(track_image_path):
+        # Convert album image's resolution query
+        track_image_path = re.sub(pattern="\/600\/", repl="/400/", string=track_image_path)
+        image_file = Image.open(requests.get(track_image_path, stream=True).raw)
+
+        return image_file
+
     def cover_create_process(self, track_image_path, background_design_pattern, foreground_design_pattern, logo_image_path, track_title, musician_title, text_color, asset_image_path_list):
         # Load track cover image
-        album_cover_image = Image.open(fp=track_image_path)
+        album_cover_image = self.get_album_cover_image(track_image_path=track_image_path)
 
         # Create background image
         background_canvas = self.background_handler.background_create_process(design_pattern=background_design_pattern,
@@ -118,10 +128,6 @@ if __name__ == "__main__":
 
     b_path = '/home/discoverious/Documents/PycharmProjects/youtube_shorts_project/temperary_database'
 
-    print(data_set[0])
-
-    #selected_data = data_set[0]
-
     for selected_data in data_set[:1]:
         composite_canvas_result = cover_design_handler.cover_create_process(track_image_path=f"{b_path}/album_cover_images/{selected_data['track_information_dict']['album_id']}.jpg",
                                                                             background_design_pattern='gradation',
@@ -132,9 +138,7 @@ if __name__ == "__main__":
                                                                             musician_title=selected_data['track_information_dict']['musician_title'],
                                                                             text_color=(255, 255, 255))
 
-
-
-        #composite_canvas_result.save(f"{b_path}/test_results/{selected_data['track_information_dict']['track_id']}.png", quality=100)
+        composite_canvas_result.save(f"{b_path}/test_results/{selected_data['track_information_dict']['track_id']}.png", quality=100)
 
 
 

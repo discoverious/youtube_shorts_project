@@ -42,7 +42,7 @@ class VideoHandler:
 
             subtitle = (ImageClip(text_image_array)
                         .set_duration(duration_time)
-                        .margin(left=text_x, top=text_y, opacity=0)
+                        .margin(left=text_x if text_x >= 0 else 0, top=text_y, opacity=0)
                         .set_pos(("left", "top")))
 
             music_video = CompositeVideoClip([music_video, (subtitle

@@ -60,7 +60,7 @@ class MovieCreatorHandler:
             translated_musician = self.translator.translate_mono_sentence(text=selected_track_info['musician_title'], target_language=target_language)
 
             # Create cover image
-            cover_design = cover_design_handler.cover_create_process(track_image_path=f"{self.base_path}/album_cover_images/{selected_track_info['album_id']}.jpg",
+            cover_design = cover_design_handler.cover_create_process(track_image_path=selected_track_info['album_thumbnail_save_path'],
                                                                      background_design_pattern='gradation',
                                                                      foreground_design_pattern='album_with_record',
                                                                      logo_image_path=f'{self.base_path}/asset_images/logo/logo.png',
@@ -126,7 +126,6 @@ if __name__ == "__main__":
 
         for track_file in track_file_list:
             print(f"제목: {track_file['track_information_dict']['track_title']}, 가수: {track_file['track_information_dict']['musician_title']}")
-            print(track_file)
 
         print('-' * 50)
         print("이 플레이리스트로 할거요? ( y / n )")
@@ -139,14 +138,9 @@ if __name__ == "__main__":
     handler = MovieCreatorHandler()
 
     for track_data in track_file_list:
-        try:
             handler.music_video_creator_process(target_language_list=['ja', 'vi', 'th', 'en'], #'id'
                                                 lyric_data_list=track_data['lyric_data'],
                                                 selected_track_info=track_data['track_information_dict'],
                                                 music_file_path=track_data["music_file_save_path"],
                                                 clip_length=60)
-
-        except Exception as e:
-            print("ERROR OCCURRED!")
-            print(e)
 

@@ -112,7 +112,7 @@ if __name__ == "__main__":
             break
 
         print("=" * 50)
-        print("기록한 플레이리스트 제목을 입력하시오. (ex: 2021_8_14_2_32_58.pkl )")
+        print("기록한 플레이리스트 제목을 입력하시오. (ex: 2021_8_14_2_32_58.pkl)")
         print("=" * 50)
         print("파일 리스트 목록")
         print("-" * 50)
@@ -138,9 +138,13 @@ if __name__ == "__main__":
     handler = MovieCreatorHandler()
 
     for track_data in track_file_list:
-        handler.music_video_creator_process(target_language_list=['ja', 'vi', 'th', 'en'], #'id'
-                                            lyric_data_list=track_data['lyric_data'],
-                                            selected_track_info=track_data['track_information_dict'],
-                                            music_file_path=track_data["music_file_save_path"],
-                                            clip_length=60)
+        try:
+            handler.music_video_creator_process(target_language_list=['ja', 'vi', 'th', 'en'], #'id'
+                                                lyric_data_list=track_data['lyric_data'],
+                                                selected_track_info=track_data['track_information_dict'],
+                                                music_file_path=track_data["music_file_save_path"],
+                                                clip_length=60)
+
+        except Exception as e:
+            print(e)
 

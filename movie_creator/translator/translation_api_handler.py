@@ -54,9 +54,15 @@ class TranslationApiHandler:
             # Set data (target_language_list=['ja', 'vi', 'id', 'th', 'en'])
             data = f"source=ko&target={target_language}&text=" + enc_text
 
-            # Get response
-            response = urllib.request.urlopen(request, data=data.encode("utf-8"))
-            rescode = response.getcode()
+            try:
+                # Get response
+                response = urllib.request.urlopen(request, data=data.encode("utf-8"))
+                rescode = response.getcode()
+
+            except Exception as e:
+                self.change_secret_index()
+                request = self.update_request_header()
+                continue
 
             if rescode == 200:
                 # Decode data and add to dict
@@ -64,9 +70,8 @@ class TranslationApiHandler:
                 translated_data = json.loads(response_body.decode('utf-8'))['message']['result']['translatedText']
 
             else:
-                self.change_secret_index()
-                request = self.update_request_header()
-                continue
+                print("일일 번역 API 양 초과")
+                break
 
         return translated_data
 
@@ -88,8 +93,14 @@ class TranslationApiHandler:
             data = f"source=ko&target={target_language}&text=" + enc_text
 
             # Get response
-            response = urllib.request.urlopen(request, data=data.encode("utf-8"))
-            rescode = response.getcode()
+            try:
+                response = urllib.request.urlopen(request, data=data.encode("utf-8"))
+                rescode = response.getcode()
+
+            except Exception as e:
+                self.change_secret_index()
+                request = self.update_request_header()
+                continue
 
             if rescode == 200:
                 # Decode data and add to dict
@@ -99,9 +110,8 @@ class TranslationApiHandler:
                 text_index += 1
 
             else:
-                self.change_secret_index()
-                request = self.update_request_header()
-                continue
+                print("일일 번역 API 양 초과")
+                break
 
         return translated_list
 

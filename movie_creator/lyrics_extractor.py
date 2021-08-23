@@ -77,4 +77,5 @@ if __name__ == "__main__":
     pickle.dump(result, file_handler, protocol=4)
     # pickle.dump(data, file_handler,protocol=4)
     file_handler.close()
+    print("RE")
 

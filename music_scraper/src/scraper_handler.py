@@ -131,6 +131,7 @@ class ScraperHandler:
         time.sleep(1)
         window_after = driver.window_handles[1]
         driver.switch_to_window(window_after)
+        driver.maximize_window()
 
         time.sleep(waiting_time_after_execution)
 
@@ -268,11 +269,22 @@ class ScraperHandler:
 
                 time.sleep(10)
 
+        # Save
+
         return track_data_list
 
 
 if __name__ == "__main__":
+    '''
     scraper_handler = ScraperHandler()
     scraper_handler.scrape_process()
+    '''
+    
+    with open(f"/home/discoverious/Documents/PycharmProjects/youtube_shorts_project/temperary_database/track_data_set/2021_8_19_11_21_17.pkl", 'rb') as f:
+            data_set = pickle.load(f)
 
+    lyrics_data = list()
+
+    for k in data_set:
+        print(k)
 

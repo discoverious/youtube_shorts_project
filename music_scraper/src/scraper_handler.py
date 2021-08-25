@@ -255,6 +255,7 @@ class ScraperHandler:
                 self.click_music_prev(driver=driver)
 
                 # Start recording music
+                time.sleep(0.3)
                 music_file_save_path = self.internal_sound_recorder.start_recording(wave_output_filename=track_information_dict['track_id'],
                                                                                     record_seconds=track_information_dict['song_length_by_second'])
 
@@ -275,7 +276,6 @@ class ScraperHandler:
 
 
 if __name__ == "__main__":
-    '''
     scraper_handler = ScraperHandler()
     scraper_handler.scrape_process()
     '''
@@ -287,4 +287,5 @@ if __name__ == "__main__":
 
     for k in data_set:
         print(k)
+    '''
 

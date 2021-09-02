@@ -76,16 +76,16 @@ class MovieCreatorHandler:
             # Create video
             video_handler = VideoHandler(subtitle_font_name=language_font_setting['subtitle_font']['name'])
             
-            video_handler.video_create_process(cover_image=cover_design,
-                                               music_file_path=music_file_path,
-                                               lyrics_text_list=translated_lyrics_list,
-                                               lyrics_time_list=lyrics_time_list,
-                                               music_length=clip_length,
-                                               layout_x=57,
-                                               layout_y=494,
-                                               layout_width=337,
-                                               layout_height=228,
-                                               file_name=f"{self.base_path}/videos/{selected_track_info['track_title']}_{language_font_setting['name']}.webm")
+            video_handler.music_video_create_process(cover_image=cover_design,
+                                                     music_file_path=music_file_path,
+                                                     lyrics_text_list=translated_lyrics_list,
+                                                     lyrics_time_list=lyrics_time_list,
+                                                     music_length=clip_length,
+                                                     layout_x=57,
+                                                     layout_y=494,
+                                                     layout_width=337,
+                                                     layout_height=228,
+                                                     file_name=f"{self.base_path}/videos/{selected_track_info['track_title']}_{language_font_setting['name']}.webm")
 
 
 if __name__ == "__main__":

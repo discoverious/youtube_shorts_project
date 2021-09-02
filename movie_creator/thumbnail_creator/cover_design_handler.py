@@ -52,17 +52,72 @@ class CoverDesignHandler:
 
         return image_file
 
+    @staticmethod
+    def get_content_image(content_image_path):
+        if type(content_image_path) == str:
+            # Convert album image's resolution query
+            image_file = Image.open(requests.get(content_image_path, stream=True).raw)
+
+            return image_file
+
+        else:
+            # If image is pil image
+            return content_image_path
+
+    def content_cover_create_process(self, content_image_path, background_design_pattern, foreground_design_pattern, logo_image_path, content_title, text_color):
+        # Load content image
+        source_content_image = self.get_content_image(content_image_path=content_image_path)
+
+        # Create background image
+        background_canvas = self.background_handler.background_create_process(design_pattern=background_design_pattern,
+                                                                              target_image=source_content_image)
+
+        # Create foreground image
+        foreground_canvas, foreground_x, foreground_y = self.foreground_handler.foreground_create_process(design_pattern=foreground_design_pattern,
+                                                                                                          target_image=source_content_image,
+                                                                                                          image_size_ratio=1.0,
+                                                                                                          positioning_style='center')
+
+        # Merge foreground, background
+        image_composite_canvas = self.design_utility.alpha_merging(canvas=background_canvas,
+                                                                   asset_image=foreground_canvas,
+                                                                   x=foreground_x,
+                                                                   y=foreground_y)
+
+        # Resize and attach logo to canvas
+        logo_image = Image.open(fp=logo_image_path).convert('RGBA')
+        logo_composite_canvas = self.design_utility.alpha_merging(canvas=image_composite_canvas,
+                                                                  asset_image=logo_image,
+                                                                  x=35,
+                                                                  y=85)
+
+        # Attach text if exists
+        if content_title is None:
+            return logo_composite_canvas
+
+        else:
+            text_canvas = self.text_handler.create_content_video_title_text(title_text=content_title,
+                                                                            foreground_y=foreground_y - 15,
+                                                                            text_color=text_color)
+
+            text_composite_canvas = self.design_utility.alpha_merging(canvas=logo_composite_canvas,
+                                                                      asset_image=text_canvas,
+                                                                      x=0,
+                                                                      y=0)
+
+            return text_composite_canvas
+
     def cover_create_process(self, track_image_path, background_design_pattern, foreground_design_pattern, logo_image_path, track_title, musician_title, text_color, asset_image_path_list):
         # Load track cover image
         album_cover_image = self.get_album_cover_image(track_image_path=track_image_path)
 
         # Create background image
         background_canvas = self.background_handler.background_create_process(design_pattern=background_design_pattern,
-                                                                              track_cover_image=album_cover_image)
+                                                                              target_image=album_cover_image)
 
         # Create foreground image
         foreground_canvas, foreground_x, foreground_y = self.foreground_handler.foreground_create_process(design_pattern=foreground_design_pattern,
-                                                                                                          track_cover_image=album_cover_image,
+                                                                                                          target_image=album_cover_image,
                                                                                                           image_size_ratio=0.75,
                                                                                                           positioning_style='center')
 
@@ -85,7 +140,6 @@ class CoverDesignHandler:
                                                                        x=center_x,
                                                                        y=self.canvas_height - asset_image.height - 140)
 
-
         # Resize and attach logo to canvas
         logo_image = Image.open(fp=logo_image_path).convert('RGBA')
         logo_composite_canvas = self.design_utility.alpha_merging(canvas=image_composite_canvas,
@@ -94,17 +148,15 @@ class CoverDesignHandler:
                                                                   y=115)
 
         # Attach text
-        text_canvas = self.text_handler.create_title_text(track_title=track_title,
-                                                          musician_title=musician_title,
-                                                          foreground_y=foreground_y,
-                                                          text_color=text_color)
+        text_canvas = self.text_handler.create_music_video_title_text(track_title=track_title,
+                                                                      musician_title=musician_title,
+                                                                      foreground_y=foreground_y,
+                                                                      text_color=text_color)
 
         text_composite_canvas = self.design_utility.alpha_merging(canvas=logo_composite_canvas,
                                                                   asset_image=text_canvas,
                                                                   x=0,
                                                                   y=0)
-
-        text_composite_canvas.show()
 
         return text_composite_canvas
 

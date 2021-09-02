@@ -12,10 +12,10 @@ class BackgroundHandler:
         self.background_creator = BackgroundProtocolHandler(canvas_width=self.canvas_width,
                                                             canvas_height=self.canvas_height)
 
-    def background_create_process(self, design_pattern, track_cover_image):
+    def background_create_process(self, design_pattern, target_image):
         # Create background canvas
         background_canvas = self.background_creator.design_main_component(design_pattern=design_pattern,
-                                                                          track_cover_image=track_cover_image)
+                                                                          target_image=target_image)
 
         background_canvas.putalpha(255)
 

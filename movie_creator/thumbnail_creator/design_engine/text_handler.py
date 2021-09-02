@@ -16,7 +16,7 @@ class TextHandler:
         self.font_base_path = f'{DB_DIR}/temperary_database/fonts'
 
         track_title_font = None
-        if track_title_font_name is not None: track_title_font = ImageFont.truetype(font=f"{self.font_base_path}/{track_title_font_name}", size=30)
+        if track_title_font_name is not None: track_title_font = ImageFont.truetype(font=f"{self.font_base_path}/{track_title_font_name}", size=28)
 
         musician_title_font = None
         if musician_title_font_name is not None: musician_title_font = ImageFont.truetype(font=f"{self.font_base_path}/{musician_title_font_name}", size=23)
@@ -119,7 +119,33 @@ class TextHandler:
 
         return text_canvas
 
-    def create_title_text(self, track_title, musician_title, foreground_y, text_color):
+    def create_content_video_title_text(self, title_text, foreground_y, text_color):
+        # Create dummy screen & drawing canvas to draw text
+        dummy_canvas = Image.new('RGBA',
+                                 size=(self.canvas_width, self.canvas_height),
+                                 color=(255, 255, 255) + (0,))
+
+        dummy_drawing_canvas = ImageDraw.Draw(dummy_canvas)
+
+        # Get size of each text type
+        content_video_title_text_w, content_video_title_text_h = self.get_text_box_size(text=title_text, text_role='track_title_font')
+
+        # Set text position
+        content_video_title_text_x, content_video_title_text_y = self.set_text_position(text_role='track_title_font',
+                                                                                        text_w=content_video_title_text_w,
+                                                                                        text_h=content_video_title_text_h,
+                                                                                        target_y=foreground_y)
+
+        # Draw texts
+        dummy_drawing_canvas.text(xy=(content_video_title_text_x, content_video_title_text_y),
+                                  text=title_text,
+                                  fill=text_color,
+                                  font=self.font_setting['track_title_font'],
+                                  align="center")
+
+        return dummy_canvas
+
+    def create_music_video_title_text(self, track_title, musician_title, foreground_y, text_color):
         # Create dummy screen & drawing canvas to draw text
         dummy_canvas = Image.new('RGBA',
                                  size=(self.canvas_width, self.canvas_height),

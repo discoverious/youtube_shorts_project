@@ -5,6 +5,7 @@ import re
 import requests
 import pickle
 import os
+from PIL import Image
 import sys
 
 import sys
@@ -187,7 +188,17 @@ class ScraperHandler:
         album_thumbnail_path = driver.find_element_by_xpath(xpath='//div[contains(@class, "thumbnail")]/img').get_attribute('src').split('?')[0]
         album_thumbnail_path = re.sub(pattern='100', repl='600', string=album_thumbnail_path)
 
-        #//image.bugsm.co.kr/album/images/100/40586/4058623.jpg?version=2021-08-10 01:06:34.0
+        # Convert album image's resolution query & Save
+        image_file = Image.open(requests.get(album_thumbnail_path, stream=True).raw)
+
+        # Set path to save
+        album_cover_save_path = f'{self.base_save_path}/album_image'
+
+        if not os.path.exists(album_cover_save_path):
+            os.makedirs(album_cover_save_path)
+
+        # Pickle data
+        image_file.save(f"{album_cover_save_path}/{track_id}.png")
 
         return {
             'track_id': track_id,
@@ -247,8 +258,14 @@ class ScraperHandler:
                                                                        waiting_time_before_execution=10)
 
                 # Gather track's lyrics
-                lyric_data = self.get_lyrics_response_content(driver=driver,
-                                                              track_id=track_information_dict['track_id'])
+                lyric_data = None
+
+                try:
+                    lyric_data = self.get_lyrics_response_content(driver=driver,
+                                                                  track_id=track_information_dict['track_id'])
+
+                except Exception as e:
+                    print(f"There's no lyric data , {e}")
 
                 # Rewind track
                 self.click_music_stop(driver=driver)
@@ -264,9 +281,8 @@ class ScraperHandler:
                               'lyric_data': lyric_data,
                               'music_file_save_path': music_file_save_path}
 
-                print(track_data)
-
-                track_data_list.append(track_data)
+                if lyric_data is not None:
+                    track_data_list.append(track_data)
 
                 time.sleep(10)
 

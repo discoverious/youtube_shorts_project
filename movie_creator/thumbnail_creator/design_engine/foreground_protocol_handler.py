@@ -6,7 +6,10 @@ from movie_creator.thumbnail_creator.design_engine.design_engine_utility import 
 
 
 class ForegroundProtocolHandler:
-    def __init__(self):
+    def __init__(self, canvas_width, canvas_height):
+        self.canvas_width = canvas_width
+        self.canvas_height = canvas_height
+
         self.design_engine_utility = DesignEngineUtility()
 
         # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -85,7 +88,7 @@ class ForegroundProtocolHandler:
 
         return image_with_frame
 
-    def design_album_with_record(self, track_cover_image):
+    def design_album_with_record(self, target_image):
         # Covering area
         covering_area = 0.5
 
@@ -94,25 +97,25 @@ class ForegroundProtocolHandler:
 
         # Convert images to RGBA
         asset_image = asset_image.convert('RGBA')
-        track_cover_image = track_cover_image.convert('RGBA')
+        target_image = target_image.convert('RGBA')
 
         # Attach shadow to track cover
-        track_cover_image = self.attach_shadow(track_cover_image)
+        target_image = self.attach_shadow(target_image)
 
-        if track_cover_image.height != 400:
-            track_cover_image = track_cover_image.resize((400, 400))
+        if target_image.height != 400:
+            target_image = target_image.resize((400, 400))
 
         # Resize asset image (이상적인건, resize 가 일어나지 않게 하는 것)
-        if track_cover_image.height != asset_image.height:
-            asset_image = asset_image.resize((int(asset_image.width * (track_cover_image.height / asset_image.height)), track_cover_image.height))
+        if target_image.height != asset_image.height:
+            asset_image = asset_image.resize((int(asset_image.width * (target_image.height / asset_image.height)), target_image.height))
 
         image_with_frame = self.mask_image_in_frame(mask_color=[0, 0, 0, 51],
-                                                    attaching_image=track_cover_image,
+                                                    attaching_image=target_image,
                                                     asset_image=asset_image)
 
         # Set dummy canvas
         dummy_canvas = Image.new('RGBA',
-                                 (int(asset_image.width + (track_cover_image.width * covering_area)), int(track_cover_image.height)),
+                                 (int(asset_image.width + (target_image.width * covering_area)), int(target_image.height)),
                                  (255, 255, 255) + (0,))
 
         # Attach each images to canvas
@@ -122,7 +125,7 @@ class ForegroundProtocolHandler:
                                                                              y=0)
 
         album_cover_attached_canvas = self.design_engine_utility.alpha_merging(canvas=record_cd_attached_canvas,
-                                                                               asset_image=track_cover_image,
+                                                                               asset_image=target_image,
                                                                                x=0,
                                                                                y=0)
 
@@ -147,9 +150,31 @@ class ForegroundProtocolHandler:
 
         return composite_canvas
 
-    def design_main_component(self, design_pattern, track_cover_image):
+    def design_hold_in_target_box(self, target_image):
+        # Set preset target_box
+        target_box = {"width": self.canvas_width,
+                      "height": self.canvas_height * 0.5}
+
+        # Set image resize length
+        if target_image.width >= target_image.height:
+            image_resize_width = target_box["width"]
+            image_resize_height = (image_resize_width / target_image.width) * target_image.height
+
+        else:
+            image_resize_height = target_box["height"]
+            image_resize_width = (image_resize_height / target_image.height) * target_image.width
+
+        target_image = target_image.resize((int(image_resize_width), int(image_resize_height)))
+        target_image = target_image.convert('RGBA')
+
+        return target_image
+
+    def design_main_component(self, design_pattern, target_image):
         if design_pattern == 'album_with_record':
-            return self.design_album_with_record(track_cover_image=track_cover_image)
+            return self.design_album_with_record(target_image=target_image)
+
+        elif design_pattern == "hold_in_target_box":
+            return self.design_hold_in_target_box(target_image= target_image)
 
 
 if __name__ == "__main__":
@@ -158,4 +183,4 @@ if __name__ == "__main__":
     cover_image = Image.open(fp=f'{protocol_handler.base_asset_path}/album_cover_images/20412824.jpg')
 
     protocol_handler.design_main_component(design_pattern='album_with_record',
-                                           track_cover_image=cover_image)
+                                           target_image=cover_image)

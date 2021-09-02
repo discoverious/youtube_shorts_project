@@ -10,8 +10,18 @@ import time
 class SeleniumController:
     def __init__(self):
         self.user_agent = "MusicScraper"
-        #self.driver = self.get_image_blocked_driver(show_browser=True)
-        self.driver = self.get_image_unblocked_driver(show_browser=True)
+        self.driver = self.get_image_blocked_driver(show_browser=True)
+        #self.driver = self.get_image_unblocked_driver(show_browser=True)
+
+    def get_to_bottom_once(self, scroll_pause_time):
+        # Get scroll height
+        last_height = self.driver.execute_script("return document.body.scrollHeight")
+
+        # Scroll down to bottom
+        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+        # Wait to load page
+        time.sleep(scroll_pause_time)
 
     def get_to_bottom(self, scroll_pause_time):
         # Get scroll height
@@ -155,16 +165,33 @@ class SeleniumController:
         caps = DesiredCapabilities.CHROME
         caps['goog:loggingPrefs'] = {'performance': 'media'}
 
-        try:
-            driver = webdriver.Chrome('driver/' + chrome_driver_file, options=options)
+        if os.name == 'nt':
+            # If Windows
+            chrome_driver_file = "chromedriver.exe"
 
-        except:
+        else:
+            # If Linux
+            chrome_driver_file = "chromedriver"
+        try:
             # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
             BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
             # Import secrets
             DB_DIR = os.path.join(BASE_DIR, '../../')
             base_path = f'{DB_DIR}/music_scraper/selenium_storage'
+
+            driver = webdriver.Chrome(base_path + chrome_driver_file, options=options)
+
+        except:
+            print("이 에러 난 것")
+            # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+            BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+            # Import secrets
+            DB_DIR = os.path.join(BASE_DIR, '../..')
+            base_path = f'{DB_DIR}/music_scraper/selenium_storage/'
+
+            print(base_path)
 
             driver = webdriver.Chrome(base_path + chrome_driver_file, options=options)
 

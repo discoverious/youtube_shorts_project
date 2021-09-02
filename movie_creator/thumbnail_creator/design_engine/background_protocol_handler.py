@@ -28,9 +28,9 @@ class BackgroundProtocolHandler:
 
         return result
 
-    def design_background_with_gradation(self, track_cover_image):
+    def design_background_with_gradation(self, target_image):
         # Get color set of cover image
-        color_set = self.color_net.get_clustered_color(pil_image=track_cover_image)
+        color_set = self.color_net.get_clustered_color(pil_image=target_image)
 
         # Get specific color from gradation palette
         gradation_color_set = self.color_net.get_closest_color_from_gradation_palette(rgb=color_set['prime_color'])
@@ -44,9 +44,19 @@ class BackgroundProtocolHandler:
 
         return gradation_background_canvas
 
-    def design_main_component(self, design_pattern, track_cover_image):
+    def design_plain_background(self, target_image):
+        plain_background_canvas = Image.new(mode="RGBA",
+                                            size=(self.canvas_width, self.canvas_height),
+                                            color=(0, 0, 0, 255))
+
+        return plain_background_canvas
+
+    def design_main_component(self, design_pattern, target_image):
         if design_pattern == 'gradation':
-            return self.design_background_with_gradation(track_cover_image=track_cover_image)
+            return self.design_background_with_gradation(target_image=target_image)
+
+        if design_pattern == 'plain_black':
+            return self.design_plain_background(target_image=target_image)
 
 
 if __name__ == "__main__":
@@ -57,7 +67,7 @@ if __name__ == "__main__":
 
     protocol_handler = BackgroundProtocolHandler(450, 900)
     im = protocol_handler.design_main_component(design_pattern='gradation',
-                                                track_cover_image=album_cover_image)
+                                                target_image=album_cover_image)
 
     im.show()
 

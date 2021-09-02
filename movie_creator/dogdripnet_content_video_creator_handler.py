@@ -114,13 +114,13 @@ class ContentVideoCreatorHandler:
                                                                                      content_title=message,
                                                                                      text_color=(255, 255, 255))
 
-                    if len(cover_design_list) < 60 // interval_time:
+                    if len(cover_design_list) < 58 // interval_time:
                         cover_design_list.append(cover_design)
 
                     else:
                         break
 
-            if len(cover_design_list) > 60 // interval_time:
+            if len(cover_design_list) > 58 // interval_time:
                 break
 
         # Set save path
